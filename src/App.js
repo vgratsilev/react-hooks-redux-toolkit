@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { increment, decrement } from 'toolkitRedux/toolkitReducer';
+import { addTodo, removeLastTodo } from 'toolkitRedux/toolkitSlice';
+
+const addAsyncTodo = () => async (dispatch) => {
+    setTimeout(() => dispatch(addTodo('Async TODO')), 2000);
+};
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const count = useSelector((state) => state.toolkit.count);
+    const todos = useSelector((state) => state.toolkitSlice.todos);
+    const dispatch = useDispatch();
+
+    return (
+        <div className={'App'}>
+            <h1>Counter {count}</h1>
+            <button type={'button'} className={'btn'} onClick={() => dispatch(increment())}>
+                Increment
+            </button>
+            <button type={'button'} className={'btn'} onClick={() => dispatch(decrement())}>
+                Decrement
+            </button>
+            <button type={'button'} className={'btn'} onClick={() => dispatch(removeLastTodo())}>
+                Delete last TODO
+            </button>
+            <button type={'button'} className={'btn'} onClick={() => dispatch(addTodo(prompt()))}>
+                Add TODO
+            </button>
+            <button type={'button'} className={'btn'} onClick={() => dispatch(addAsyncTodo())}>
+                Add Async TODO
+            </button>
+            <ul>
+                {todos.map((todo) => (
+                    <li key={todo}>{todo}</li>
+                ))}
+            </ul>
+        </div>
+    );
 }
 
 export default App;
